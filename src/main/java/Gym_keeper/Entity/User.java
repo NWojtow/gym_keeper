@@ -1,19 +1,29 @@
 package Gym_keeper.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table (name="User")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private int id;
    private  String username;
-   private String password;
+   private String passwd;
 
-    public User(String username, String password) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public User(int id, String username, String password) {
+        this.id = id;
         this.username = username;
-        this.password = password;
+        this.passwd = password;
     }
 
 
@@ -25,11 +35,11 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswd() {
+        return passwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
     }
 }

@@ -5,13 +5,25 @@ import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.EntityExistsException;
+
 public class UserDAO {
 
 public void add(User user) {
     HibernateFactory hibernateFactory = new HibernateFactory();
     Session session = hibernateFactory.getSessionFactory().openSession();
     Transaction transaction = session.beginTransaction();
+
+    try{
+        if(hibernateFactory.exists(User.class,"username",user.getUsername())){
+            throw new EntityExistsException();
+        }
+    }catch(EntityExistsException e ){
+        e.printStackTrace();
+        throw new RuntimeException();
+    }
     try {
+
         session.save(user);
         session.getTransaction().commit();
     } catch (Exception e) {
@@ -37,6 +49,7 @@ public void delete(int id){
         throw new RuntimeException();
     } finally{
         session.close();
+
     }
 }
 
