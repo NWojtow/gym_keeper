@@ -1,6 +1,7 @@
 package Gym_keeper.Entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="training")
@@ -11,11 +12,21 @@ public class Training {
 
     private int training_id;
     private int id;
+    private Date date;
     private float weight;
 
-    public Training(int training_id, int id, float weight) {
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Training(int training_id, int id, Date date, float weight) {
         this.training_id = training_id;
         this.id = id;
+        this.date = date;
         this.weight = weight;
     }
 
