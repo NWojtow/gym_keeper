@@ -23,7 +23,6 @@ public void add(User user) {
         throw new RuntimeException();
     }
     try {
-
         session.save(user);
         session.getTransaction().commit();
     } catch (Exception e) {
