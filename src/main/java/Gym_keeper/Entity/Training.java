@@ -3,6 +3,7 @@ package Gym_keeper.Entity;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
 @Table(name="training")
 public class Training {
@@ -22,6 +23,7 @@ public class Training {
     public void setDate(Date date) {
         this.date = date;
     }
+
 
     public Training(int training_id, int id, Date date, float weight) {
         this.training_id = training_id;

@@ -1,15 +1,15 @@
-package Gym_keeper.DAO;
+package Gym_keeper.CRUD;
 
 import Gym_keeper.Entity.User;
 import Gym_keeper.Entity.User_data;
 import Gym_keeper.HibernateFactory;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 
-public class User_dataDAO {
+public class User_dataCRUD {
     public void add(User_data data){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
@@ -20,7 +20,7 @@ public class User_dataDAO {
             }}
             catch(EntityExistsException e){
                 e.printStackTrace();
-                throw new RuntimeException();
+                throw new EntityExistsException();
             }
         try{
             session.save(data);
@@ -38,6 +38,9 @@ public class User_dataDAO {
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
         try{
+            if(!hibernateFactory.exists(User_data.class,"user_data_id",id)){
+                throw new EntityNotFoundException();
+            }
             User_data user_data = (User_data) session.get(User_data.class, id);
             return user_data;
         }catch(Exception e ){
