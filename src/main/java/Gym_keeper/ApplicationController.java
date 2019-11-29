@@ -1,9 +1,11 @@
 package Gym_keeper;
 
 import Gym_keeper.CRUD.ExerciseCRUD;
+import Gym_keeper.CRUD.SerieCRUD;
 import Gym_keeper.CRUD.TrainingCRUD;
 import Gym_keeper.CRUD.UserCRUD;
 import Gym_keeper.Entity.Exercise;
+import Gym_keeper.Entity.Serie;
 import Gym_keeper.Entity.Training;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +85,23 @@ public class ApplicationController {
         Exercise temp;
         try{
             temp = exerciseCRUD.read(id);
+        }catch(EntityNotFoundException e ){
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        catch(RuntimeException e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="training/exercise/rep/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getRep(@PathVariable("id")int id){
+        SerieCRUD serieCRUD = new SerieCRUD();
+        Gson gson = new Gson();
+        Serie temp;
+        try{
+            temp = serieCRUD.read(id);
         }catch(EntityNotFoundException e ){
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
