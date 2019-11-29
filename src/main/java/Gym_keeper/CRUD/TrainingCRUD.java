@@ -31,10 +31,11 @@ public class TrainingCRUD {
     public Training read(int id) {
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
+        if(!hibernateFactory.exists(Training.class,"training_id",id)){
+            throw new EntityNotFoundException();
+        }
         try{
-            if(!hibernateFactory.exists(Training.class,"training_id",id)){
-                throw new EntityNotFoundException();
-            }
+
             Training temp = (Training) session.get(Training.class, id);
             return temp;
         }

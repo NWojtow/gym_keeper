@@ -24,6 +24,8 @@ public class Training {
         this.date = date;
     }
 
+    public Training() {
+    }
 
     public Training(int training_id, int id, Date date, float weight) {
         this.training_id = training_id;

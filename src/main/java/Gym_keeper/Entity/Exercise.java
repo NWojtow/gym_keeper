@@ -15,6 +15,9 @@ public class Exercise {
     private String exercise_name;
     private int training_id;
 
+    public Exercise() {
+    }
+
     public Exercise(int exercise_id, String exercise_name, int training_id) {
         this.exercise_id = exercise_id;
         this.exercise_name = exercise_name;

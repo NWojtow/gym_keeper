@@ -7,6 +7,7 @@ import Gym_keeper.CRUD.UserCRUD;
 import Gym_keeper.Entity.Exercise;
 import Gym_keeper.Entity.Serie;
 import Gym_keeper.Entity.Training;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,13 @@ public class ApplicationController {
 
         Gson gson = new Gson();
         UserCRUD userDao = new UserCRUD();
-
-        User temp = gson.fromJson(userData, User.class);
+        User temp;
+        try {
+            temp = gson.fromJson(userData, User.class);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         try {
             userDao.add(temp);
         }catch(EntityExistsException e){
@@ -39,6 +45,7 @@ public class ApplicationController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
 
     @RequestMapping(value ="user/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getUser(@PathVariable("id")int id){
@@ -59,6 +66,7 @@ public class ApplicationController {
         return new ResponseEntity<>(gson.toJson(temp),HttpStatus.OK);
     }
 
+
     @RequestMapping(value ="training/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getTraining(@PathVariable("id")int id){
         TrainingCRUD trainingCRUD = new TrainingCRUD();
@@ -77,6 +85,7 @@ public class ApplicationController {
         }
         return new ResponseEntity<>(gson.toJson(temp),HttpStatus.OK);
     }
+
 
     @RequestMapping(value="training/exercise/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getExercise(@PathVariable("id")int id){

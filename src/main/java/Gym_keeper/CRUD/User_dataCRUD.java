@@ -37,10 +37,10 @@ public class User_dataCRUD {
     public User_data read(int id){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
+        if(!hibernateFactory.exists(User_data.class,"user_data_id",id)){
+            throw new EntityNotFoundException();
+        }
         try{
-            if(!hibernateFactory.exists(User_data.class,"user_data_id",id)){
-                throw new EntityNotFoundException();
-            }
             User_data user_data = (User_data) session.get(User_data.class, id);
             return user_data;
         }catch(Exception e ){

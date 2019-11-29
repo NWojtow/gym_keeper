@@ -14,6 +14,8 @@ public class Serie {
     private float weight;
     private int exercise_id;
 
+    public Serie() {
+    }
 
     public Serie(int rep_id, int reps, float weight, int exercise_id) {
         this.rep_id = rep_id;

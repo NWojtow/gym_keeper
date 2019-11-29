@@ -29,10 +29,12 @@ public class ExerciseCRUD {
     public Exercise read(int id){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
+        if(!hibernateFactory.exists(Exercise.class,"exercise_id",id)){
+            throw new EntityNotFoundException();
+        }
+
         try{
-            if(!hibernateFactory.exists(Exercise.class,"exercise_id",id)){
-                throw new EntityNotFoundException();
-            }
+
             Exercise temp = (Exercise) session.get(Exercise.class, id);
             return temp;
         }catch(Exception e){

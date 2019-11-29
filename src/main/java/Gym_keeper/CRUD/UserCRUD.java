@@ -15,14 +15,10 @@ public void add(User user) {
     Session session = hibernateFactory.getSessionFactory().openSession();
     Transaction transaction = session.beginTransaction();
 
-    try{
-        if(hibernateFactory.exists(User.class,"username",user.getUsername())){
-            throw new RuntimeException();
+    if(hibernateFactory.exists(User.class,"username",user.getUsername())){
+            throw new EntityExistsException();
         }
-    }catch(RuntimeException e ){
-        e.printStackTrace();
-        throw new EntityExistsException();
-    }
+
     try {
         session.save(user);
         session.getTransaction().commit();
@@ -56,10 +52,10 @@ public void delete(int id){
 public User read (int id){
     HibernateFactory hibernateFactory = new HibernateFactory();
     Session session = hibernateFactory.getSessionFactory().openSession();
+    if(!hibernateFactory.exists(User.class,"id",id)){
+        throw new EntityNotFoundException();
+    }
     try{
-        if(!hibernateFactory.exists(User.class,"id",id)){
-            throw new EntityNotFoundException();
-        }
         User user = (User) session.get(User.class,id);
         return user;
     } catch(Exception e){

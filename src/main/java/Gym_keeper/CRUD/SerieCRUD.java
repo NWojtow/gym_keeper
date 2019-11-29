@@ -29,10 +29,11 @@ public class SerieCRUD {
     public Serie read(int id){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
+        if(!hibernateFactory.exists(Serie.class,"rep_id",id)){
+            throw new EntityNotFoundException();
+        }
         try{
-            if(!hibernateFactory.exists(Serie.class,"rep_id",id)){
-                throw new EntityNotFoundException();
-            }
+
             Serie temp = (Serie) session.get(Serie.class, id);
             return temp;
         }catch(Exception e){
