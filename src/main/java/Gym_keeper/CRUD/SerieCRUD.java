@@ -6,6 +6,7 @@ import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 public class SerieCRUD {
@@ -14,10 +15,14 @@ public class SerieCRUD {
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        if(hibernateFactory.exists(User.class,"rep_id",serie.getRep_id())){
+            throw new EntityExistsException();
+        }
         try{
             session.save(serie);
             transaction.commit();
-        } catch (Exception e){
+        }
+        catch (Exception e){
             transaction.rollback();
             e.printStackTrace();
             throw new RuntimeException();

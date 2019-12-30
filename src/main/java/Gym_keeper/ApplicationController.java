@@ -21,104 +21,129 @@ import javax.persistence.EntityNotFoundException;
 @RestController
 public class ApplicationController {
 
-    @RequestMapping(value="/user", method = RequestMethod.PUT)
-    public ResponseEntity<String> addUser(@RequestBody String userData){
+    @ResponseBody
+    @RequestMapping(value = "/user", method = RequestMethod.PUT)
+    public ResponseEntity<String> addUser(@RequestBody String userData) {
 
         Gson gson = new Gson();
         UserCRUD userDao = new UserCRUD();
         User temp;
         try {
             temp = gson.fromJson(userData, User.class);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         try {
             userDao.add(temp);
-        }catch(EntityExistsException e){
+        } catch (EntityExistsException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-
-    @RequestMapping(value ="user/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getUser(@PathVariable("id")int id){
+    @ResponseBody
+    @RequestMapping(value = "user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getUser(@PathVariable("id") int id) {
         UserCRUD userDao = new UserCRUD();
         Gson gson = new Gson();
         User temp;
 
         try {
-            temp = userDao.read(id);
-        }
-        catch(EntityNotFoundException e){
+                    temp = userDao.read(id);
+        } catch (EntityNotFoundException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }
-        catch(RuntimeException e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(gson.toJson(temp),HttpStatus.OK);
+        return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
     }
 
-
-    @RequestMapping(value ="training/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getTraining(@PathVariable("id")int id){
+    @ResponseBody
+    @RequestMapping(value = "training/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getTraining(@PathVariable("id") int id) {
         TrainingCRUD trainingCRUD = new TrainingCRUD();
         Gson gson = new Gson();
         Training temp;
 
         try {
             temp = trainingCRUD.read(id);
-        }
-        catch(EntityNotFoundException e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }
-        catch(RuntimeException e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(gson.toJson(temp),HttpStatus.OK);
-    }
-
-
-    @RequestMapping(value="training/exercise/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getExercise(@PathVariable("id")int id){
-        ExerciseCRUD exerciseCRUD = new ExerciseCRUD();
-        Gson gson = new Gson();
-        Exercise temp;
-        try{
-            temp = exerciseCRUD.read(id);
-        }catch(EntityNotFoundException e ){
+        } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
     }
 
-    @RequestMapping(value="training/exercise/rep/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getRep(@PathVariable("id")int id){
+    @ResponseBody
+    @RequestMapping(value = "training/exercise/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getExercise(@PathVariable("id") int id) {
+        ExerciseCRUD exerciseCRUD = new ExerciseCRUD();
+        Gson gson = new Gson();
+        Exercise temp;
+        try {
+            temp = exerciseCRUD.read(id);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "training/exercise/rep/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getRep(@PathVariable("id") int id) {
+        SerieCRUD serieCRUD = new SerieCRUD();
+        Gson gson = new Gson();
+        Serie temp;
+        try {
+            temp = serieCRUD.read(id);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "training/exercise/rep", method = RequestMethod.POST)
+    public ResponseEntity<String> postRep (@RequestBody String data) {
         SerieCRUD serieCRUD = new SerieCRUD();
         Gson gson = new Gson();
         Serie temp;
         try{
-            temp = serieCRUD.read(id);
-        }catch(EntityNotFoundException e ){
+            temp = gson.fromJson(data, Serie.class);
+        } catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            serieCRUD.add(temp);
+        }
+        catch(EntityExistsException e){
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
         catch(RuntimeException e){
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(gson.toJson(temp), HttpStatus.OK);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+
+
     }
 
 }
