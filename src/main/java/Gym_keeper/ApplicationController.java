@@ -1,13 +1,12 @@
 package Gym_keeper;
 
-import Gym_keeper.CRUD.ExerciseCRUD;
-import Gym_keeper.CRUD.SerieCRUD;
-import Gym_keeper.CRUD.TrainingCRUD;
-import Gym_keeper.CRUD.UserCRUD;
+import Gym_keeper.CRUD.ExerciseDAO;
+import Gym_keeper.CRUD.SerieDAO;
+import Gym_keeper.CRUD.TrainingDAO;
+import Gym_keeper.CRUD.UserDAO;
 import Gym_keeper.Entity.Exercise;
 import Gym_keeper.Entity.Serie;
 import Gym_keeper.Entity.Training;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class ApplicationController {
     public ResponseEntity<String> addUser(@RequestBody String userData) {
 
         Gson gson = new Gson();
-        UserCRUD userDao = new UserCRUD();
+        UserDAO userDao = new UserDAO();
         User temp;
         try {
             temp = gson.fromJson(userData, User.class);
@@ -50,7 +49,7 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "user/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getUser(@PathVariable("id") int id) {
-        UserCRUD userDao = new UserCRUD();
+        UserDAO userDao = new UserDAO();
         Gson gson = new Gson();
         User temp;
 
@@ -68,12 +67,12 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "training/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getTraining(@PathVariable("id") int id) {
-        TrainingCRUD trainingCRUD = new TrainingCRUD();
+        TrainingDAO trainingDAO = new TrainingDAO();
         Gson gson = new Gson();
         Training temp;
 
         try {
-            temp = trainingCRUD.read(id);
+            temp = trainingDAO.read(id);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -86,7 +85,7 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "training/exercise/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getExercise(@PathVariable("id") int id) {
-        ExerciseCRUD exerciseCRUD = new ExerciseCRUD();
+        ExerciseDAO exerciseCRUD = new ExerciseDAO();
         Gson gson = new Gson();
         Exercise temp;
         try {
@@ -104,11 +103,11 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "training/exercise/rep/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getRep(@PathVariable("id") int id) {
-        SerieCRUD serieCRUD = new SerieCRUD();
+        SerieDAO serieDAO = new SerieDAO();
         Gson gson = new Gson();
         Serie temp;
         try {
-            temp = serieCRUD.read(id);
+            temp = serieDAO.read(id);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -121,7 +120,7 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "training/exercise/rep", method = RequestMethod.POST)
     public ResponseEntity<String> postRep (@RequestBody String data) {
-        SerieCRUD serieCRUD = new SerieCRUD();
+        SerieDAO serieDAO = new SerieDAO();
         Gson gson = new Gson();
         Serie temp;
         try{
@@ -130,7 +129,7 @@ public class ApplicationController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         try {
-            serieCRUD.add(temp);
+            serieDAO.add(temp);
         }
         catch(EntityExistsException e){
             e.printStackTrace();

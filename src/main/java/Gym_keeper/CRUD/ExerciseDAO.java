@@ -9,7 +9,7 @@ import org.hibernate.Transaction;
 
 import javax.persistence.EntityNotFoundException;
 
-public class ExerciseCRUD {
+public class ExerciseDAO {
     public void add(Exercise exercise){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();

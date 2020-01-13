@@ -8,7 +8,7 @@ import org.hibernate.Transaction;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-public class UserCRUD {
+public class UserDAO {
 
 public void add(User user) {
     HibernateFactory hibernateFactory = new HibernateFactory();
