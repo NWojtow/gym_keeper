@@ -1,17 +1,14 @@
 package Gym_keeper.controler;
 
-import Gym_keeper.crud.ExerciseDAO;
-import Gym_keeper.crud.SerieDAO;
-import Gym_keeper.crud.TrainingDAO;
-import Gym_keeper.crud.UserDAO;
-import Gym_keeper.entitiy.DaoUser;
-import Gym_keeper.entitiy.Exercise;
-import Gym_keeper.entitiy.Serie;
-import Gym_keeper.entitiy.Training;
+import Gym_keeper.crud.*;
+import Gym_keeper.entitiy.*;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 
@@ -22,17 +19,22 @@ import javax.persistence.EntityNotFoundException;
 @RestController
 public class ApplicationController {
 
+  private  UserDAO userDAO = new UserDAO();
+  private  ExerciseDAO exerciseDAO = new ExerciseDAO();
+  private  SerieDAO serieDAO = new SerieDAO();
+  private  TrainingDAO trainingDAO = new TrainingDAO();
+  private  User_dataDAO userDataDAO = new User_dataDAO();
+
+  private  Gson gson = new Gson();
+
     @Secured("ROLE_ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody
     @RequestMapping(value = "user/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getUser(@PathVariable("id") int id) {
-        UserDAO userDao = new UserDAO();
-        Gson gson = new Gson();
         DaoUser temp;
-
         try {
-            temp = userDao.read(id);
+            temp = userDAO.read(id);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity(null, HttpStatus.NOT_FOUND);
@@ -42,38 +44,40 @@ public class ApplicationController {
         return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseBody
+    @RequestMapping(value = "user/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable("id") int id) {
+            userDAO.delete(id);
+
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="user/userdata", method = RequestMethod.POST)
+    public ResponseEntity<String> putUserData(@RequestBody String userData){
+        User_data entity = gson.fromJson(userData, User_data.class);
+            userDataDAO.add(entity);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+
     @ResponseBody
     @RequestMapping(value = "training/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getTraining(@PathVariable("id") int id) {
-        TrainingDAO trainingDAO = new TrainingDAO();
-        Gson gson = new Gson();
         Training temp;
 
-        try {
-            temp = trainingDAO.read(id);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
-        } catch (RuntimeException e) {
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        temp = trainingDAO.read(id);
         return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
     }
 
     @ResponseBody
     @RequestMapping(value = "training/exercise/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getExercise(@PathVariable("id") int id) {
-        ExerciseDAO exerciseCRUD = new ExerciseDAO();
-        Gson gson = new Gson();
         Exercise temp;
-        try {
-            temp = exerciseCRUD.read(id);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
-        } catch (RuntimeException e) {
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        temp = exerciseDAO.read(id);
+
         return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
     }
 
@@ -81,40 +85,20 @@ public class ApplicationController {
     @ResponseBody
     @RequestMapping(value = "training/exercise/rep/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getRep(@PathVariable("id") int id) {
-        SerieDAO serieDAO = new SerieDAO();
-        Gson gson = new Gson();
         Serie temp;
-        try {
-            temp = serieDAO.read(id);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
-        } catch (RuntimeException e) {
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        temp = serieDAO.read(id);
+
         return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
     }
 
     @ResponseBody
     @RequestMapping(value = "training/exercise/rep", method = RequestMethod.POST)
     public ResponseEntity<String> postRep(@RequestBody String data) {
-        SerieDAO serieDAO = new SerieDAO();
-        Gson gson = new Gson();
         Serie temp;
-        try {
-            temp = gson.fromJson(data, Serie.class);
-        } catch (Exception e) {
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
-        }
-        try {
-            serieDAO.add(temp);
-        } catch (EntityExistsException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.CONFLICT);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        temp = gson.fromJson(data, Serie.class);
+
+        serieDAO.add(temp);
+
         return new ResponseEntity(null, HttpStatus.OK);
     }
 }

@@ -4,9 +4,11 @@ import Gym_keeper.entitiy.Exercise;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;
 
+@Repository
 public class ExerciseDAO {
     public void add(Exercise exercise){
         HibernateFactory hibernateFactory = new HibernateFactory();

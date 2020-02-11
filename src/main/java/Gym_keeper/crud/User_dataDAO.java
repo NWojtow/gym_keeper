@@ -4,10 +4,12 @@ import Gym_keeper.entitiy.User_data;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+@Repository
 public class User_dataDAO {
     public void add(User_data data){
         HibernateFactory hibernateFactory = new HibernateFactory();

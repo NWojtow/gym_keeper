@@ -5,10 +5,12 @@ import Gym_keeper.entitiy.Serie;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+@Repository
 public class SerieDAO {
 
     public void add(Serie serie){
