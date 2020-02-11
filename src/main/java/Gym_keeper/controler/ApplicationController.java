@@ -10,42 +10,20 @@ import Gym_keeper.entitiy.Serie;
 import Gym_keeper.entitiy.Training;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-
+@CrossOrigin
 @RestController
 public class ApplicationController {
 
-    @ResponseBody
-    @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public ResponseEntity<String> addUser(@RequestBody String userData) {
-
-        Gson gson = new Gson();
-        UserDAO userDao = new UserDAO();
-        DaoUser temp;
-        try {
-            temp = gson.fromJson(userData, DaoUser.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
-        }
-        try {
-            userDao.add(temp);
-        } catch (EntityExistsException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.CONFLICT);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity(null, HttpStatus.OK);
-    }
-
+    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody
     @RequestMapping(value = "user/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getUser(@PathVariable("id") int id) {

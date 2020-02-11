@@ -55,6 +55,15 @@ public class JWTAuthenticationControler {
         }
     }
 
+    @RequestMapping(value = "/register-admin", method = RequestMethod.POST)
+    public ResponseEntity<?> saveAdminUser(@RequestBody UserDTO user) throws Exception {
+        try {
+            return ResponseEntity.ok(userDetailsService.saveAdmin(user));
+        }catch (Exception e){
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

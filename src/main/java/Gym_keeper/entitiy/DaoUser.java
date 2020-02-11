@@ -14,6 +14,7 @@ public class DaoUser {
    private  String username;
    @JsonIgnore
    private String passwd;
+   private String type;
 
     public int getId() {
         return id;
@@ -47,5 +48,12 @@ public class DaoUser {
 
     public void setPasswd(String passwd) {
         this.passwd = passwd;
+    }
+
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
     }
 }
