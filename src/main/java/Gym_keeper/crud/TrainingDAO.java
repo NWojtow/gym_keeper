@@ -1,7 +1,6 @@
-package Gym_keeper.CRUD;
+package Gym_keeper.crud;
 
-import Gym_keeper.Entity.Training;
-import Gym_keeper.Entity.User;
+import Gym_keeper.entitiy.Training;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

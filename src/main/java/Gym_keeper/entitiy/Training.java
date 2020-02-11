@@ -1,4 +1,4 @@
-package Gym_keeper.Entity;
+package Gym_keeper.entitiy;
 
 import javax.persistence.*;
 import java.util.Date;

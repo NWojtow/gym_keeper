@@ -1,6 +1,4 @@
-package Gym_keeper.Entity;
-
-import org.springframework.stereotype.Controller;
+package Gym_keeper.entitiy;
 
 import javax.persistence.*;
 

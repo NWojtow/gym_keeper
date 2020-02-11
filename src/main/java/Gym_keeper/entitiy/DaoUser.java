@@ -1,15 +1,18 @@
-package Gym_keeper.Entity;
+package Gym_keeper.entitiy;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
 @Table (name="User")
-public class User {
+public class DaoUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
    private  String username;
+   @JsonIgnore
    private String passwd;
 
     public int getId() {
@@ -20,10 +23,10 @@ public class User {
         this.id = id;
     }
 
-    public User() {
+    public DaoUser() {
     }
 
-    public User(int id, String username, String password) {
+    public DaoUser(int id, String username, String password) {
         this.id = id;
         this.username = username;
         this.passwd = password;

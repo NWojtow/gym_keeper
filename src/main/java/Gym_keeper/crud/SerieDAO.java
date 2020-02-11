@@ -1,7 +1,7 @@
-package Gym_keeper.CRUD;
+package Gym_keeper.crud;
 
-import Gym_keeper.Entity.User;
-import Gym_keeper.Entity.User_data;
+import Gym_keeper.entitiy.DaoUser;
+import Gym_keeper.entitiy.Serie;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -9,23 +9,20 @@ import org.hibernate.Transaction;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-public class User_dataDAO {
-    public void add(User_data data){
+public class SerieDAO {
+
+    public void add(Serie serie){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        if(hibernateFactory.exists(DaoUser.class,"rep_id",serie.getRep_id())){
+            throw new EntityExistsException();
+        }
         try{
-            if(hibernateFactory.exists(User_data.class,"id",data.getId())){
-                throw new EntityExistsException();
-            }}
-            catch(EntityExistsException e){
-                e.printStackTrace();
-                throw new EntityExistsException();
-            }
-        try{
-            session.save(data);
-            session.getTransaction().commit();
-        }catch(Exception e ){
+            session.save(serie);
+            transaction.commit();
+        }
+        catch (Exception e){
             transaction.rollback();
             e.printStackTrace();
             throw new RuntimeException();
@@ -34,19 +31,21 @@ public class User_dataDAO {
         }
     }
 
-    public User_data read(int id){
+    public Serie read(int id){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
-        if(!hibernateFactory.exists(User_data.class,"user_data_id",id)){
+        if(!hibernateFactory.exists(Serie.class,"rep_id",id)){
             throw new EntityNotFoundException();
         }
         try{
-            User_data user_data = (User_data) session.get(User_data.class, id);
-            return user_data;
-        }catch(Exception e ){
+
+            Serie temp = (Serie) session.get(Serie.class, id);
+            return temp;
+        }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException();
-        }finally{
+        }
+        finally{
             session.close();
         }
     }
@@ -56,10 +55,10 @@ public class User_dataDAO {
         Session session = hibernateFactory.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         try{
-            User_data user_Data = (User_data) session.get(User_data.class, id);
-            session.delete(user_Data);
-            session.getTransaction().commit();
-        }catch(Exception e){
+            Serie temp = (Serie) session.get(Serie.class, id);
+            session.delete(temp);
+            transaction.commit();
+        }catch(Exception e ){
             transaction.rollback();
             e.printStackTrace();
             throw new RuntimeException();
@@ -67,4 +66,5 @@ public class User_dataDAO {
             session.close();
         }
     }
+
 }
