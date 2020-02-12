@@ -3,6 +3,7 @@ package Gym_keeper.crud;
 import Gym_keeper.entitiy.Training;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +12,11 @@ import javax.persistence.EntityNotFoundException;
 @Repository
 public class TrainingDAO {
 
+    private HibernateFactory hibernateFactory = new HibernateFactory();
+    private SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
+
     public void add(Training training){
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try{
             session.save(training);
@@ -30,11 +33,10 @@ public class TrainingDAO {
     }
 
     public Training read(int id) {
-        HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
-        if(!hibernateFactory.exists(Training.class,"training_id",id)){
-            throw new EntityNotFoundException();
-        }
+
+        checkIfTrainingNotExists(id);
+
         try{
 
             Training temp = (Training) session.get(Training.class, id);
@@ -50,8 +52,7 @@ public class TrainingDAO {
     }
 
     public void delete (int id){
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try{
             Training temp = (Training) session.get(Training.class, id);
@@ -65,6 +66,12 @@ public class TrainingDAO {
         }
         finally{
             session.close();
+        }
+    }
+
+    private void checkIfTrainingNotExists(Integer id){
+        if(!hibernateFactory.exists(Training.class,"training_id",id)){
+            throw new EntityNotFoundException();
         }
     }
 

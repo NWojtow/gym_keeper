@@ -1,7 +1,5 @@
 package Gym_keeper.controler;
 
-import java.util.Objects;
-
 import Gym_keeper.config.JWTTokenUtil;
 import Gym_keeper.dto.UserDTO;
 import Gym_keeper.model.JwtRequest;

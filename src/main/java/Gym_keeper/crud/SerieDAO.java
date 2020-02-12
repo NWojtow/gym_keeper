@@ -4,6 +4,7 @@ import Gym_keeper.entitiy.DaoUser;
 import Gym_keeper.entitiy.Serie;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +14,14 @@ import javax.persistence.EntityNotFoundException;
 @Repository
 public class SerieDAO {
 
+    private    HibernateFactory hibernateFactory = new HibernateFactory();
+    private SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
+
     public void add(Serie serie){
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        if(hibernateFactory.exists(DaoUser.class,"rep_id",serie.getRep_id())){
-            throw new EntityExistsException();
-        }
+
+        checkIfSerieExists(serie.getRep_id());
         try{
             session.save(serie);
             transaction.commit();
@@ -34,11 +36,10 @@ public class SerieDAO {
     }
 
     public Serie read(int id){
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
-        if(!hibernateFactory.exists(Serie.class,"rep_id",id)){
-            throw new EntityNotFoundException();
-        }
+        Session session = sessionFactory.openSession();
+
+        checkIfSerieNotExists(id);
+
         try{
 
             Serie temp = (Serie) session.get(Serie.class, id);
@@ -53,8 +54,7 @@ public class SerieDAO {
     }
 
     public void delete(int id){
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         try{
             Serie temp = (Serie) session.get(Serie.class, id);
@@ -69,4 +69,15 @@ public class SerieDAO {
         }
     }
 
+    private void checkIfSerieExists(Integer id){
+        if(hibernateFactory.exists(DaoUser.class,"rep_id", id)){
+            throw new EntityExistsException();
+        }
+    }
+
+    private void checkIfSerieNotExists(Integer id){
+        if(!hibernateFactory.exists(Serie.class,"rep_id",id)){
+            throw new EntityNotFoundException();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import Gym_keeper.entitiy.DaoUser;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -17,14 +18,14 @@ import java.util.Optional;
 @Repository
 public class UserDAO implements CrudRepository<DaoUser, Integer> {
 
-public void add(DaoUser daoUser) {
-    HibernateFactory hibernateFactory = new HibernateFactory();
-    Session session = hibernateFactory.getSessionFactory().openSession();
+    private HibernateFactory hibernateFactory = new HibernateFactory();
+    private SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
+
+    public void add(DaoUser daoUser) {
+    Session session = sessionFactory.openSession();
     Transaction transaction = session.beginTransaction();
 
-    if(hibernateFactory.exists(DaoUser.class,"username", daoUser.getUsername())){
-            throw new EntityExistsException();
-        }
+    checkIfUserExistsByUsername(daoUser.getUsername());
 
     try {
         session.save(daoUser);
@@ -39,9 +40,11 @@ public void add(DaoUser daoUser) {
 }
 
 public void delete(int id){
-    HibernateFactory hibernateFactory = new HibernateFactory();
-    Session session = hibernateFactory.getSessionFactory().openSession();
+    Session session = sessionFactory.openSession();
     Transaction transaction = session.beginTransaction();
+
+    checkIfUserNotExistsById(id);
+
     try{
         DaoUser daoUser = (DaoUser) session.get(DaoUser.class, id);
         session.delete(daoUser);
@@ -52,18 +55,14 @@ public void delete(int id){
         throw new RuntimeException();
     } finally{
         session.close();
-
     }
 }
 
 public DaoUser read (int id){
-    HibernateFactory hibernateFactory = new HibernateFactory();
     Session session = hibernateFactory.getSessionFactory().openSession();
-    if(!hibernateFactory.exists(DaoUser.class,"id",id)){
-        throw new EntityNotFoundException();
-    }
+        checkIfUserNotExistsById(id);
     try{
-        DaoUser daoUser = (DaoUser) session.get(DaoUser.class,id);
+        DaoUser daoUser = (DaoUser) session.get(DaoUser.class, id);
         return daoUser;
     } catch(Exception e){
         e.printStackTrace();
@@ -76,9 +75,8 @@ public DaoUser read (int id){
     public DaoUser read (String username){
         HibernateFactory hibernateFactory = new HibernateFactory();
         Session session = hibernateFactory.getSessionFactory().openSession();
-        if(!hibernateFactory.exists(DaoUser.class,"username", username)){
-            throw new EntityNotFoundException();
-        }
+
+        checkIfUserNotExistsByUsername(username);
         try{
             Criteria criteria = session.createCriteria(DaoUser.class);
             DaoUser daoUser = (DaoUser) criteria.add(Restrictions.eq("username",username)).uniqueResult();
@@ -93,14 +91,10 @@ public DaoUser read (int id){
 
     @Override
     public <S extends DaoUser> S save(S s) {
-        HibernateFactory hibernateFactory = new HibernateFactory();
-        Session session = hibernateFactory.getSessionFactory().openSession();
+       Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
 
-        if(hibernateFactory.exists(DaoUser.class,"username", s.getUsername())){
-            throw new EntityExistsException();
-        }
-
+        checkIfUserExistsByUsername(s.getUsername());
         try {
             session.save(s);
             session.getTransaction().commit();
@@ -121,7 +115,7 @@ public DaoUser read (int id){
 
     @Override
     public Optional<DaoUser> findById(Integer integer) {
-        return Optional.empty();
+        return null;
     }
 
     @Override
@@ -163,4 +157,22 @@ public DaoUser read (int id){
     public void deleteAll() {
 
     }
+
+    private void checkIfUserExistsByUsername(String username){
+        if(hibernateFactory.exists(DaoUser.class,"username", username)){
+            throw new EntityExistsException();
+        }
+    }
+    private void checkIfUserNotExistsByUsername(String username){
+        if(!hibernateFactory.exists(DaoUser.class,"username", username)){
+            throw new EntityExistsException();
+        }
+    }
+
+    private void checkIfUserNotExistsById(Integer id){
+        if(!hibernateFactory.exists(DaoUser.class,"id", id)){
+            throw new EntityNotFoundException();
+        }
+    }
+
 }
