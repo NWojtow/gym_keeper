@@ -25,7 +25,7 @@ public class TrainingDAO {
         catch(Exception e){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
         finally{
             session.close();
@@ -44,7 +44,7 @@ public class TrainingDAO {
         }
         catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
         finally{
             session.close();
@@ -62,7 +62,7 @@ public class TrainingDAO {
         catch(Exception e ){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
         finally{
             session.close();

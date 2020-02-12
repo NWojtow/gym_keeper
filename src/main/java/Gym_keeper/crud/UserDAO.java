@@ -33,7 +33,7 @@ public class UserDAO implements CrudRepository<DaoUser, Integer> {
     } catch (Exception e) {
         transaction.rollback();
         e.printStackTrace();
-        throw new RuntimeException();
+        throw e;
     } finally {
         session.close();
     }
@@ -66,7 +66,7 @@ public DaoUser read (int id){
         return daoUser;
     } catch(Exception e){
         e.printStackTrace();
-        throw new RuntimeException();
+        throw e;
     }finally{
         session.close();
     }
@@ -83,7 +83,7 @@ public DaoUser read (int id){
             return daoUser;
         } catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
@@ -101,7 +101,7 @@ public DaoUser read (int id){
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         } finally {
             session.close();
         }
@@ -165,7 +165,7 @@ public DaoUser read (int id){
     }
     private void checkIfUserNotExistsByUsername(String username){
         if(!hibernateFactory.exists(DaoUser.class,"username", username)){
-            throw new EntityExistsException();
+            throw new EntityNotFoundException();
         }
     }
 
@@ -174,5 +174,4 @@ public DaoUser read (int id){
             throw new EntityNotFoundException();
         }
     }
-
 }

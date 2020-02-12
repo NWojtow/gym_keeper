@@ -1,6 +1,5 @@
 package Gym_keeper.crud;
 
-import Gym_keeper.entitiy.DaoUser;
 import Gym_keeper.entitiy.Serie;
 import Gym_keeper.HibernateFactory;
 import org.hibernate.Session;
@@ -29,7 +28,7 @@ public class SerieDAO {
         catch (Exception e){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
@@ -41,12 +40,11 @@ public class SerieDAO {
         checkIfSerieNotExists(id);
 
         try{
-
             Serie temp = (Serie) session.get(Serie.class, id);
             return temp;
         }catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
         finally{
             session.close();
@@ -63,14 +61,14 @@ public class SerieDAO {
         }catch(Exception e ){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
     }
 
     private void checkIfSerieExists(Integer id){
-        if(hibernateFactory.exists(DaoUser.class,"rep_id", id)){
+        if(hibernateFactory.exists(Serie.class,"rep_id", id)){
             throw new EntityExistsException();
         }
     }

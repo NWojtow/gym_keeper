@@ -27,7 +27,7 @@ public class User_dataDAO {
         }catch(Exception e ){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
@@ -42,7 +42,7 @@ public class User_dataDAO {
             return user_data;
         }catch(Exception e ){
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
@@ -61,7 +61,7 @@ public class User_dataDAO {
         }catch(Exception e){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }

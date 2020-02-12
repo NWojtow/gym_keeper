@@ -24,7 +24,7 @@ public class ExerciseDAO {
         } catch (Exception e){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
@@ -37,12 +37,11 @@ public class ExerciseDAO {
         checkIfExerciseNotExists(id);
 
         try{
-
             Exercise temp = (Exercise) session.get(Exercise.class, id);
             return temp;
         }catch(Exception e){
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
         finally{
             session.close();
@@ -59,7 +58,7 @@ public class ExerciseDAO {
         }catch(Exception e ){
             transaction.rollback();
             e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }finally{
             session.close();
         }
