@@ -1,6 +1,8 @@
 package Gym_keeper.entitiy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name="user_data")
@@ -10,10 +12,14 @@ public class User_data {
     @Column(name="user_data_id")
 
     private int user_data_id;
+
+    @Column(nullable = false)
     private int id;
     private float weight;
     private int age;
 
+    public User_data(){
+    }
 
     public User_data(int user_data_id, int id, float weight, int age) {
         this.user_data_id = user_data_id;

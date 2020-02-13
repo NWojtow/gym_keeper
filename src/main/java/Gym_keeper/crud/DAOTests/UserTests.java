@@ -26,7 +26,7 @@ public class UserTests {
     @Test
     @Transactional
     public void userExistsTest(){
-
+        //given
         UserDAO userDAO = new UserDAO();
         DaoUser testUser = new DaoUser();
         testUser.setType("USER");
@@ -35,6 +35,7 @@ public class UserTests {
 
         userDAO.add(testUser);
 
+        //then
         assertThrows(EntityExistsException.class, () ->{
             userDAO.add(testUser);
         });

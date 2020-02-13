@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 
 @CrossOrigin
@@ -57,9 +60,13 @@ public class ApplicationController {
 
     @ResponseBody
     @RequestMapping(value="user/userdata", method = RequestMethod.POST)
-    public ResponseEntity<String> putUserData(@RequestBody String userData){
+    public ResponseEntity<String> putUserData(@Valid  @RequestBody String userData){
         User_data entity = gson.fromJson(userData, User_data.class);
-            userDataDAO.add(entity);
+
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        validator.validate(entity);
+
+        userDataDAO.add(entity);
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 

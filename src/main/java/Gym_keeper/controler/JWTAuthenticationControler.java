@@ -2,6 +2,7 @@ package Gym_keeper.controler;
 
 import Gym_keeper.config.JWTTokenUtil;
 import Gym_keeper.dto.UserDTO;
+import Gym_keeper.entitiy.DaoUser;
 import Gym_keeper.model.JwtRequest;
 import Gym_keeper.model.JwtResponse;
 import Gym_keeper.service.JWTUserService;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 @RestController
 @CrossOrigin
@@ -46,6 +50,9 @@ public class JWTAuthenticationControler {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        validator.validate(user, DaoUser.class);
+
         try {
             return ResponseEntity.ok(userDetailsService.save(user));
         }catch (Exception e){

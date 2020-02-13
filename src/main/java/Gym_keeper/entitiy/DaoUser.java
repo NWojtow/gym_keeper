@@ -3,6 +3,7 @@ package Gym_keeper.entitiy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table (name="User")
