@@ -2,12 +2,15 @@ package Gym_keeper.crud;
 
 import Gym_keeper.entitiy.Training;
 import Gym_keeper.HibernateFactory;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Repository
 public class TrainingDAO {
@@ -41,6 +44,22 @@ public class TrainingDAO {
 
             Training temp = (Training) session.get(Training.class, id);
             return temp;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+        finally{
+            session.close();
+        }
+    }
+    public List<Training> readAll(int userId) {
+        Session session = hibernateFactory.getSessionFactory().openSession();
+        Criteria criteria = session.createCriteria(Training.class);
+
+        try{
+            List<Training> list = criteria.add(Restrictions.eq("id", userId)).list();
+            return list;
         }
         catch(Exception e){
             e.printStackTrace();

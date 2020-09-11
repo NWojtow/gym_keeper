@@ -2,6 +2,7 @@ package Gym_keeper.crud;
 
 import Gym_keeper.entitiy.DaoUser;
 import Gym_keeper.HibernateFactory;
+import Gym_keeper.entitiy.Training;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,13 +14,17 @@ import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class UserDAO implements CrudRepository<DaoUser, Integer> {
 
     private HibernateFactory hibernateFactory = new HibernateFactory();
     private SessionFactory sessionFactory = hibernateFactory.getSessionFactory();
+    private TrainingDAO trainingDao = new TrainingDAO();
 
     public void add(DaoUser daoUser) {
     Session session = sessionFactory.openSession();
@@ -81,6 +86,32 @@ public DaoUser read (int id){
             Criteria criteria = session.createCriteria(DaoUser.class);
             DaoUser daoUser = (DaoUser) criteria.add(Restrictions.eq("username",username)).uniqueResult();
             return daoUser;
+        } catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }finally{
+            session.close();
+        }
+    }
+
+    public void updateTrainings(String username, Training newTraining) {
+        HibernateFactory hibernateFactory = new HibernateFactory();
+        Session session = hibernateFactory.getSessionFactory().openSession();
+        try {
+            if(newTraining.getDate() == null) {
+                newTraining.setDate(new Date());
+            }
+            DaoUser user = read(username);
+            session.evict(user);
+            Set<Training> trainings;
+            if(user.getTrainings() != null) {
+               trainings = user.getTrainings();
+            } else {
+                trainings = new HashSet<>();
+            }
+            trainings.add(newTraining);
+            user.setTrainings(trainings);
+            session.update(user);
         } catch(Exception e){
             e.printStackTrace();
             throw e;

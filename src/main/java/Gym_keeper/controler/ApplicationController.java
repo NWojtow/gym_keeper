@@ -2,6 +2,7 @@ package Gym_keeper.controler;
 
 import Gym_keeper.crud.*;
 import Gym_keeper.entitiy.*;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
-@CrossOrigin
 @RestController
+@CrossOrigin
 public class ApplicationController {
 
     @Autowired
@@ -29,7 +33,7 @@ public class ApplicationController {
   private  TrainingDAO trainingDAO = new TrainingDAO();
   private  User_dataDAO userDataDAO = new User_dataDAO();
 
-  private  Gson gson = new Gson();
+  private static Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     @Secured("ROLE_ADMIN")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -87,21 +91,25 @@ public class ApplicationController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "training", method = RequestMethod.POST)
-    public ResponseEntity<String> postTraining(@RequestBody String training){
+    @RequestMapping(value = "training/{username}", method = RequestMethod.POST)
+    public ResponseEntity<String> postTraining(@RequestBody String training, @PathVariable("username")String username){
         Training temp = gson.fromJson(training, Training.class);
-        trainingDAO.add(temp);
+        Training newTraining = new Training(temp.getDate(), temp.getWeight());
+        DaoUser user = userDAO.read(username);
+        newTraining.setUser(user);
+
+        userDAO.updateTrainings(username, newTraining);
 
         return  new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @ResponseBody
-    @RequestMapping(value = "training/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getTraining(@PathVariable("id") int id) {
-        Training temp;
-
-        temp = trainingDAO.read(id);
-        return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
+    @RequestMapping(value = "training/all/{username}", method = RequestMethod.GET)
+    public ResponseEntity<?> getTraining(@PathVariable("username") String username) {
+        DaoUser user = userDAO.read(username);
+//        return new ResponseEntity(gson.toJson(temp), HttpStatus.OK);
+        List<Training> trainings = new ArrayList<>(user.getTrainings());
+        return ResponseEntity.ok(gson.toJson(trainings));
     }
 
     @ResponseBody

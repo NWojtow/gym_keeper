@@ -1,5 +1,7 @@
 package Gym_keeper.entitiy;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,10 +13,16 @@ public class Training {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column (name="training_id")
 
+    @Expose
     private int training_id;
-    private int id;
+    @Expose
     private Date date;
+    @Expose
     private float weight;
+
+    @ManyToOne
+    @JoinColumn(name ="id")
+    private DaoUser user;
 
     public Date getDate() {
         return date;
@@ -27,9 +35,7 @@ public class Training {
     public Training() {
     }
 
-    public Training(int training_id, int id, Date date, float weight) {
-        this.training_id = training_id;
-        this.id = id;
+    public Training(Date date, float weight) {
         this.date = date;
         this.weight = weight;
     }
@@ -42,12 +48,8 @@ public class Training {
         this.training_id = training_id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setUser(DaoUser user) {
+        this.user = user;
     }
 
     public float getWeight() {

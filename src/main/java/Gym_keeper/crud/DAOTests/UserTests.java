@@ -3,7 +3,6 @@ package Gym_keeper.crud.DAOTests;
 import Gym_keeper.crud.UserDAO;
 import Gym_keeper.entitiy.DaoUser;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;

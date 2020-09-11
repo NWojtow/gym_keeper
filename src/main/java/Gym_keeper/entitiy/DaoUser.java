@@ -1,9 +1,12 @@
 package Gym_keeper.entitiy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table (name="User")
@@ -16,6 +19,17 @@ public class DaoUser {
    @JsonIgnore
    private String passwd;
    private String type;
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Set<Training> trainings = new HashSet();
+
+    public Set getTrainings() {
+        return trainings;
+    }
+
+    public void setTrainings(Set trainings) {
+        this.trainings = trainings;
+    }
 
     public int getId() {
         return id;

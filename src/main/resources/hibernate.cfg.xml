@@ -13,7 +13,6 @@
         <mapping class="Gym_keeper.entitiy.Serie" />
         <mapping class="Gym_keeper.entitiy.Training" />
         <mapping class="Gym_keeper.entitiy.User_data" />
-
-
     </session-factory>
+
 </hibernate-configuration>
